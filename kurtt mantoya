@@ -1,0 +1,27 @@
+import requests
+import string
+from bs4 import BeautifulSoup
+
+Enter_input = input('Search: ')
+u_i = string.capwords(Enter_input)
+lists = u_i.split()
+word = "_".join(lists)
+
+url = "http://en.wikipedia.org/wiki/" + word
+
+def wikibot(url):
+    url_open = requests.get(url)
+    soup = BeautifulSoup(url_open.content, 'html.parser')
+    details = soup.find('table', {'class': 'infobox'})
+    if details is not None:
+        rows = details.find_all('tr')
+        for row in rows:
+            heading = row.find('th')
+            data = row.find('td')
+            if heading is not None and data is not None:
+                print('{}  ::  {}'.format(heading.text, data.text))
+                print("------------------")
+    for i in range(1, 3):
+        print(soup('p')[i].text)
+
+wikibot(url)
